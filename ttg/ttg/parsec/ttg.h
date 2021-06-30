@@ -1140,8 +1140,8 @@ namespace ttg_parsec {
           } else {
             // TODO: Ask Ed -- Why do we need a copy of value here?
             valueT value_copy = value;  // use constexpr if to avoid making a copy if given nonconst rvalue
-            reinterpret_cast<std::decay_t<valueT> &>(copy->device_private) = std::move(
-                reducer(reinterpret_cast<std::decay_t<valueT> &&>(copy->device_private), std::move(value_copy)));
+            *reinterpret_cast<std::decay_t<valueT> *>(copy->device_private) = std::move(
+                reducer(reinterpret_cast<std::decay_t<valueT>&&>(*reinterpret_cast<std::decay_t<valueT>*>(copy->device_private)), std::move(value_copy)));
             task->stream_size[i]--;
             release = (task->stream_size[i] == 0);
           }
