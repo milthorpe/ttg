@@ -1143,12 +1143,12 @@ namespace ttg_parsec {
             *reinterpret_cast<std::decay_t<valueT> *>(copy->device_private) = std::move(
                 reducer(reinterpret_cast<std::decay_t<valueT>&&>(*reinterpret_cast<std::decay_t<valueT>*>(copy->device_private)), std::move(value_copy)));
             task->stream_size[i]--;
-            release = (task->stream_size[i] == 0);
+            release = (task->stream_size[i] == 1);
           }
         } else {
           reducer();  // even if this was a control input, must execute the reducer for possible side effects
           task->stream_size[i]--;
-          release = (task->stream_size[i] == 0);
+          release = (task->stream_size[i] == 1);
         }
         parsec_hash_table_unlock_bucket(&tasks_table, hk);
         if (release) release_task(this, task);
@@ -1714,7 +1714,7 @@ namespace ttg_parsec {
 
         // commit changes
         task->stream_size[i] += (int)size;
-        bool release = (task->stream_size[i] == 0);
+        bool release = (task->stream_size[i] == 1);
         parsec_hash_table_unlock_bucket(&tasks_table, hk);
 
         if (release) release_task(this, task);
@@ -1755,7 +1755,7 @@ namespace ttg_parsec {
 
         // commit changes
         task->stream_size[i] += (int)size;
-        bool release = (task->stream_size[i] == 0);
+        bool release = (task->stream_size[i] == 1);
         parsec_hash_table_unlock_bucket(&tasks_table, hk);
 
         if (release) release_task(this, task);
